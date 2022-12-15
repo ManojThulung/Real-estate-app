@@ -11,8 +11,8 @@ function Header() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <header className="px-3 flex justify-between items-center">
+    <div className="bg-white sticky top-0 z-50 border-b shadow-sm">
+      <header className="px-3 flex justify-between items-center max-w-7xl mx-auto">
         <div
           className="text-green-600 font-bold text-2xl cursor-pointer"
           onClick={() => navigate("/")}
