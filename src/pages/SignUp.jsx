@@ -1,7 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import OAuth from "../component/OAuth";
+import { db } from "../firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 function SingUn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +19,7 @@ function SingUn() {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const { name, email, password } = formData;
 
@@ -18,6 +28,30 @@ function SingUn() {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      updateProfile(auth.currentUser, { displayName: name });
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+
+      formDataCopy.timestamp = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+
+      toast.success("Registration Successful");
+      navigate("/");
+    } catch (error) {
+      toast.error("Something Went wrong");
+    }
   };
 
   return (
@@ -32,7 +66,7 @@ function SingUn() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="name"
