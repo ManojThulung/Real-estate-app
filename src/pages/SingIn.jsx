@@ -51,7 +51,7 @@ function SingIn() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onSubmit={onSignIn}>
             <input
               type="email"
               id="email"
@@ -97,10 +97,7 @@ function SingIn() {
                 </Link>
               </p>
             </div>
-            <button
-              onClick={onSignIn}
-              className="bg-blue-600 w-full py-3 px-7 text-white font-medium uppercase rounded shadow-sm text-sm hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
-            >
+            <button className="bg-blue-600 w-full py-3 px-7 text-white font-medium uppercase rounded shadow-sm text-sm hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800">
               Sign In
             </button>
             <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:border-gray-300 after:flex-1">
