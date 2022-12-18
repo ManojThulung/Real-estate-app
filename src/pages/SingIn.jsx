@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../component/OAuth";
+
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { toast } from "react-toastify";
 
 function SingIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const { email, password } = formData;
 
@@ -14,6 +18,25 @@ function SingIn() {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const onSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCreadential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      //if the user exist
+      if (userCreadential.user) {
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Email id or password is incorrect");
+    }
   };
 
   return (
@@ -74,7 +97,10 @@ function SingIn() {
                 </Link>
               </p>
             </div>
-            <button className="bg-blue-600 w-full py-3 px-7 text-white font-medium uppercase rounded shadow-sm text-sm hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800">
+            <button
+              onClick={onSignIn}
+              className="bg-blue-600 w-full py-3 px-7 text-white font-medium uppercase rounded shadow-sm text-sm hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
+            >
               Sign In
             </button>
             <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:border-gray-300 after:flex-1">
