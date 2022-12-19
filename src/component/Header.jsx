@@ -25,7 +25,7 @@ function Header() {
   };
 
   return (
-    <div className="bg-white sticky top-0 z-50 border-b shadow-sm">
+    <div className="bg-white sticky top-0 z-40 border-b shadow-sm">
       <header className="px-3 flex justify-between items-center max-w-7xl mx-auto">
         <div
           className="text-green-600 font-bold text-2xl cursor-pointer"
