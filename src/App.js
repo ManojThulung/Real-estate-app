@@ -5,6 +5,7 @@ import Offer from "./pages/Offer";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
 import SingIn from "./pages/SingIn";
+import CreateListing from "./pages/CreateListing";
 import Header from "./component/Header";
 import PrivateRoute from "./component/PrivateRoute";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/sign-in" element={<SingIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer
