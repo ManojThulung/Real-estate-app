@@ -1,7 +1,24 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import Spinner from "../component/Spinner";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router";
 
 function CreateListing() {
-  const [fromData, setFormData] = useState({
+  const navigate = useNavigate();
+  const auth = getAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  // const [geoLocationEnable, setGeoLocationEnable] = useState(false);
+  const [formData, setFormData] = useState({
     type: "rent",
     name: "",
     bedrooms: 1,
@@ -13,6 +30,7 @@ function CreateListing() {
     offer: false,
     regularPrice: 0,
     discountPrice: 0,
+    images: {},
   });
 
   const {
@@ -27,14 +45,118 @@ function CreateListing() {
     offer,
     regularPrice,
     discountPrice,
-  } = fromData;
+    images,
+  } = formData;
 
-  const onChange = () => {};
+  const onChange = (e) => {
+    let boolean = null;
+    if (e.target.value === "true") {
+      boolean = true;
+    }
+    if (e.target.value === "false") {
+      boolean = false;
+    }
+    //for files
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }));
+    }
+    //for text/boolean/number
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }));
+    }
+  };
+
+  //Image upload function
+  const storeImage = async (image) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage();
+      const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+      const storageRef = ref(storage, filename);
+
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (+discountPrice >= +regularPrice) {
+      toast.error("Discount Price must be less than Regular Price");
+      return;
+    }
+
+    if (images.length > 6) {
+      toast.error("Number of images need to be less than 6");
+      return;
+    }
+
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch((error) => {
+      setIsLoading(false);
+      toast.error("Images not uploaded");
+      return;
+    });
+
+    setIsLoading((prevState) => (prevState = true));
+
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      timestamp: serverTimestamp(),
+    };
+
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountPrice;
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    setIsLoading((prevState) => (prevState = false));
+    toast.success("Listing Created!");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <main className="px-2 max-w-md mx-auto">
       <h1 className="text-center text-3xl font-bold mt-6">Create a Listing</h1>
-      <form>
+      <form onSubmit={onSubmit}>
         <p className="text-lg mt-6 font-semibold">Sell / Rent</p>
         <div className="flex gap-4">
           <button
@@ -112,7 +234,7 @@ function CreateListing() {
           <button
             type="button"
             id="parking"
-            value={false}
+            value={true}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               !parking ? "bg-gray-300 text-black" : "bg-gray-700 text-white"
@@ -123,7 +245,7 @@ function CreateListing() {
           <button
             type="button"
             id="parking"
-            value={true}
+            value={false}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               parking ? "bg-gray-300 text-black" : "bg-gray-600 text-white"
@@ -138,7 +260,7 @@ function CreateListing() {
           <button
             type="button"
             id="furnished"
-            value={false}
+            value={true}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               !furnished ? "bg-gray-300 text-black" : "bg-gray-700 text-white"
@@ -149,7 +271,7 @@ function CreateListing() {
           <button
             type="button"
             id="furnished"
-            value={true}
+            value={false}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               furnished ? "bg-gray-300 text-black" : "bg-gray-600 text-white"
@@ -170,6 +292,35 @@ function CreateListing() {
           className="w-full px-4 py-2 text-md text-gray-700 rounded border-gray-300 transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 mb-6"
         />
 
+        {/* {!geoLocationEnable && (
+          <div className="flex mb-6 items-center justify-start space-x-6">
+            <div>
+              <p className="font-semibold text-lg">Latitude</p>
+              <input
+                type="number"
+                id="latitude"
+                value={latitude}
+                onChange={onChange}
+                min="-90"
+                max="90"
+                className="w-full rounded px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 transition duration-150 ease-in-out text-center focus:text-gray-700 focus:border-slate-600 focus:bg-white"
+              />
+            </div>
+            <div>
+              <p className="font-semibold text-lg">Longitude</p>
+              <input
+                type="number"
+                id="longitude"
+                value={longitude}
+                onChange={onChange}
+                min="-180"
+                max="180"
+                className="w-full rounded px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 transition duration-150 ease-in-out text-center focus:text-gray-700 focus:border-slate-600 focus:bg-white"
+              />
+            </div>
+          </div>
+        )} */}
+
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
@@ -186,7 +337,7 @@ function CreateListing() {
           <button
             type="button"
             id="offer"
-            value={false}
+            value={true}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               !offer ? "bg-gray-300 text-black" : "bg-gray-700 text-white"
@@ -196,8 +347,8 @@ function CreateListing() {
           </button>
           <button
             type="button"
-            id="furnished"
-            value={true}
+            id="offer"
+            value={false}
             onClick={onChange}
             className={`text-sm px-7 py-3 w-full uppercase font-semibold shadow-sm rounded hover:shadow-lg transition duration-150 ease-in-out active:shadow-lg ${
               offer ? "bg-gray-300 text-black" : "bg-gray-600 text-white"
@@ -245,7 +396,6 @@ function CreateListing() {
                   id="discountPrice"
                   value={discountPrice}
                   onChange={onChange}
-                  min="1000"
                   max="50000000"
                   required={offer}
                   className="w-full rounded px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600"
