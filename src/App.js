@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import SingIn from "./pages/SingIn";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
+import Listing from "./pages/Listing";
 import Header from "./component/Header";
 import PrivateRoute from "./component/PrivateRoute";
 
@@ -27,6 +28,10 @@ function App() {
           <Route path="/sign-in" element={<SingIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/category/:listingType/:listingId"
+            element={<Listing />}
+          />
           <Route path="/create-listing" element={<PrivateRoute />}>
             <Route path="/create-listing" element={<CreateListing />} />
           </Route>
