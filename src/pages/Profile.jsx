@@ -145,8 +145,10 @@ function Profile() {
       <div className="max-w-6xl m-auto px-3 mt-6">
         {!isLoading && listings.length > 0 && (
           <>
-            <h2 className="text-2xl font-semibold text-center">My Listings</h2>
-            <ul>
+            <h2 className="text-2xl font-semibold text-center mb-6">
+              My Listings
+            </h2>
+            <ul className="mb-6 sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {listings.map((listing) => (
                 <ListItems
                   key={listing.id}
