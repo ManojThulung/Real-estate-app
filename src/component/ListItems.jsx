@@ -1,8 +1,8 @@
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
-import { MdLocationOn } from "react-icons/md";
+import { MdLocationOn, MdDelete, MdEdit } from "react-icons/md";
 
-function ListItems({ listing, id }) {
+function ListItems({ listing, id, onDelete, onEdit }) {
   return (
     <li className="bg-white relative flex flex-col justify-between items-center shadow-sm rounded-md m-[10px] overflow-hidden transition-shadow duration-150 hover:shadow-lg">
       <Link className="contents" to={`/category/${listing.type}/${id}`}>
@@ -51,6 +51,18 @@ function ListItems({ listing, id }) {
           </div>
         </div>
       </Link>
+      {onDelete && (
+        <MdDelete
+          className="absolute cursor-pointer right-2 bottom-2 h-5 text-lg text-red-600"
+          onClick={() => onDelete()}
+        />
+      )}
+      {onEdit && (
+        <MdEdit
+          className="absolute cursor-pointer right-8 bottom-2 h-5 text-lg text-red-600"
+          onClick={() => onEdit()}
+        />
+      )}
     </li>
   );
 }
