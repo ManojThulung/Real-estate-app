@@ -5,6 +5,9 @@ import Spinner from "../component/Spinner";
 import { db } from "../firebase";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { BiLinkAlt } from "react-icons/bi";
+import { MdLocationOn } from "react-icons/md";
+import { FaBed, FaBath, FaParking, FaChair } from "react-icons/fa";
+
 import SwiperCore, {
   EffectFade,
   Autoplay,
@@ -77,6 +80,62 @@ function Listing() {
           </p>
         )}
       </Swiper>
+      <div className="flex flex-col md:flex-row max-w-6xl lg:m-auto lg:space-x-5 rounded-lg shadw-lg bg-white p-4 m-4">
+        <div className="w-full h-[200px] lg:h-[400px]">
+          <p className="text-blue-900 font-bold text-xl mb-3">
+            {listing.name} - Rs.{" "}
+            {listing.offer
+              ? Number(listing.discountPrice).toLocaleString("en-IN")
+              : Number(listing.regularPrice).toLocaleString("en-IN")}
+            {listing.type === "rent" ? " / month" : ""}
+          </p>
+          <p className="flex items-center mt-6 mb-3 font-semibold">
+            <MdLocationOn className="text-green-700 mr-1 mt-[2px] text-lg" />
+            {listing.address}
+          </p>
+          <div className="flex justify-start itmes-center space-x-4">
+            <p className=" bg-red-600 text-white p-1 px-[60px] font-semibold text-center rounded-md">
+              {listing.type === "rent" ? "Rent" : "Sale"}
+            </p>
+            {listing.offer && (
+              <p className="bg-red-800 text-white p-1 px-[25px] font-semibold text-center rounded-md">
+                Rs.{" "}
+                {(
+                  +listing.regularPrice - +listing.discountPrice
+                ).toLocaleString("en-IN")}{" "}
+                Discount
+              </p>
+            )}
+          </div>
+          <p className="mt-3 mb-3">
+            <span className="font-semibold">Description - </span>
+            {listing.description}
+          </p>
+          <ul className="flex items-center font-semibold text-sm space-x-2 lg:space-x-10">
+            <li className="flex items-center whitespace-nowrap">
+              <FaBed className="text-lg mr-1" />
+              {+listing.bedrooms > 1
+                ? `${listing.bedrooms} Bedrooms`
+                : `1 Bedroom`}
+            </li>
+            <li className="flex items-center whitespace-nowrap">
+              <FaBath className="text-lg mr-1" />
+              {+listing.bathrooms > 1
+                ? `${listing.bathrooms} bathrooms`
+                : `1 Bathroom`}
+            </li>
+            <li className="flex items-center whitespace-nowrap">
+              <FaParking className="text-lg mr-1" />
+              {listing.parking ? `Parking Spot` : `No Parking`}
+            </li>
+            <li className="flex items-center whitespace-nowrap">
+              <FaChair className="text-lg mr-1" />
+              {listing.furnished ? `Furnished` : `Not Furnished`}
+            </li>
+          </ul>
+        </div>
+        <div className="bg-blue-300 w-full h-[200px] lg:h-[400px]"></div>
+      </div>
     </main>
   );
 }
