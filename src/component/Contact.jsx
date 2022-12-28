@@ -47,7 +47,7 @@ function Contact({ userRef, listing }) {
           >
             <button
               type="button"
-              className="w-full mb-6 mt-3 text-white font-semibold uppercase text-sm rounded cursor-pointer px-7 py-3 shadow-sm bg-blue-600 hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg transition duration-200 ease-in-out "
+              className="w-full mt-3 text-white font-semibold uppercase text-sm rounded cursor-pointer px-7 py-3 shadow-sm bg-blue-600 hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg transition duration-200 ease-in-out "
             >
               Sent message
             </button>

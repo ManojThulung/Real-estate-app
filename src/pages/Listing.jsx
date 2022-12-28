@@ -85,7 +85,7 @@ function Listing() {
         )}
       </Swiper>
       <div className="flex flex-col md:flex-row max-w-6xl lg:m-auto lg:space-x-5 rounded-lg shadw-lg bg-white p-4 m-4">
-        <div className="w-full h-[200px] lg:h-[400px]">
+        <div className="w-full">
           <p className="text-blue-900 font-bold text-xl mb-3">
             {listing.name} - Rs.{" "}
             {listing.offer
@@ -141,7 +141,7 @@ function Listing() {
             <div className="mt-6">
               <button
                 onClick={() => setContactLandLord(true)}
-                className="w-full text-white font-semibold mb-6 uppercase text-sm rounded cursor-pointer px-7 py-3 shadow-sm bg-blue-600 hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg transition duration-200 ease-in-out "
+                className="w-full text-white font-semibold uppercase text-sm rounded cursor-pointer px-7 py-3 shadow-sm bg-blue-600 hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg transition duration-200 ease-in-out "
               >
                 Contact landlord
               </button>
@@ -151,7 +151,12 @@ function Listing() {
             <Contact userRef={listing.userRef} listing={listing} />
           )}
         </div>
-        <div className="bg-blue-300 w-full h-[200px] lg:h-[400px] z-10 overflow-hidden"></div>
+        <div className="bg-blue-300 w-full h-[200px] lg:h-[400px] mt-6 md:ml-2 rounded z-10 overflow-hidden">
+          <p className="text-gray-700 p-4 font-semibold text-sm">
+            Location Map <span className="text-2xl">🗺️</span> will be added here
+            soon...
+          </p>
+        </div>
       </div>
     </main>
   );
