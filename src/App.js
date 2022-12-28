@@ -8,6 +8,7 @@ import SingIn from "./pages/SingIn";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
 import Listing from "./pages/Listing";
+import Category from "./pages/Category";
 import Header from "./component/Header";
 import PrivateRoute from "./component/PrivateRoute";
 
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/offer" element={<Offer />} />
+          <Route path="/category/:categoryType" element={<Category />} />
           <Route path="/profile" element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
           </Route>

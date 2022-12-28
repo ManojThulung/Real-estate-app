@@ -116,7 +116,7 @@ function Home() {
         {offerListings && offerListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">Recent Offers</h2>
-            <Link to="/offers">
+            <Link to="/offer">
               <p className="px-3 text-sm text-blue-600 hover:text-blue-800 hover:underline transition duration-150 ease-in-out">
                 Show more offers
               </p>
@@ -131,7 +131,7 @@ function Home() {
         {rentListings && rentListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">Recent Rents</h2>
-            <Link to="/category/rents">
+            <Link to="/category/rent">
               <p className="px-3 text-sm text-blue-600 hover:text-blue-800 hover:underline transition duration-150 ease-in-out">
                 Show more places for Rent
               </p>
@@ -146,7 +146,7 @@ function Home() {
         {saleListings && saleListings.length > 0 && (
           <div className="m-2 mb-6">
             <h2 className="px-3 text-2xl mt-6 font-semibold">Recent Sales</h2>
-            <Link to="/category/rents">
+            <Link to="/category/sell">
               <p className="px-3 text-sm text-blue-600 hover:text-blue-800 hover:underline transition duration-150 ease-in-out">
                 Show more places in Sales
               </p>
