@@ -48,7 +48,7 @@ function Category() {
       }
     };
     fetchListing();
-  }, []);
+  }, [params.categoryType]);
 
   const onFetchMoreListing = async () => {
     try {
