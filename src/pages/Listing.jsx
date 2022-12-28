@@ -15,12 +15,16 @@ import SwiperCore, {
   Pagination,
 } from "swiper";
 import "swiper/css/bundle";
+import { getAuth } from "firebase/auth";
+import Contact from "../component/Contact";
 
 function Listing() {
   const [isLoading, setIsLoading] = useState(true);
   const [listing, setListing] = useState(null);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
+  const [contactLandLord, setContactLandLord] = useState(false);
   const params = useParams();
+  const auth = getAuth();
   SwiperCore.use([Autoplay, Navigation, Pagination]);
 
   useEffect(() => {
@@ -111,7 +115,7 @@ function Listing() {
             <span className="font-semibold">Description - </span>
             {listing.description}
           </p>
-          <ul className="flex items-center font-semibold text-sm space-x-2 lg:space-x-10">
+          <ul className="flex items-center font-semibold text-sm space-x-2 lg:space-x-10 mb-6">
             <li className="flex items-center whitespace-nowrap">
               <FaBed className="text-lg mr-1" />
               {+listing.bedrooms > 1
@@ -133,8 +137,21 @@ function Listing() {
               {listing.furnished ? `Furnished` : `Not Furnished`}
             </li>
           </ul>
+          {listing.userRef !== auth.currentUser?.uid && !contactLandLord && (
+            <div className="mt-6">
+              <button
+                onClick={() => setContactLandLord(true)}
+                className="w-full text-white font-semibold mb-6 uppercase text-sm rounded cursor-pointer px-7 py-3 shadow-sm bg-blue-600 hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg transition duration-200 ease-in-out "
+              >
+                Contact landlord
+              </button>
+            </div>
+          )}
+          {contactLandLord && (
+            <Contact userRef={listing.userRef} listing={listing} />
+          )}
         </div>
-        <div className="bg-blue-300 w-full h-[200px] lg:h-[400px]"></div>
+        <div className="bg-blue-300 w-full h-[200px] lg:h-[400px] z-10 overflow-hidden"></div>
       </div>
     </main>
   );
