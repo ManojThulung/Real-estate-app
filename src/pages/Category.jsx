@@ -105,7 +105,10 @@ function Category() {
           )}
         </>
       ) : (
-        <p>There are no current offers available</p>
+        <p>
+          There are no current places{" "}
+          {params.categoryType === "rent" ? "for Rent." : "for Sale."}
+        </p>
       )}
     </div>
   );
