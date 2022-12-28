@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import Spinner from "../component/Spinner";
 import { db } from "../firebase";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { BiLinkAlt } from "react-icons/bi";
 import SwiperCore, {
   EffectFade,
   Autoplay,
@@ -15,6 +16,7 @@ import "swiper/css/bundle";
 function Listing() {
   const [isLoading, setIsLoading] = useState(true);
   const [listing, setListing] = useState(null);
+  const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const params = useParams();
   SwiperCore.use([Autoplay, Navigation, Pagination]);
 
@@ -44,11 +46,12 @@ function Listing() {
         effect="fade"
         modules={[EffectFade]}
         autoplay={{ delay: 3000 }}
+        className="max-w-[1260px] m-auto relative"
       >
         {listing.imgUrls.map((url, i) => (
           <SwiperSlide key={i}>
             <div
-              className="relative w-full h-[300px]"
+              className="relative w-full h-[340px]"
               style={{
                 background: `url(${url}) center no-repeat`,
                 backgroundSize: "cover",
@@ -56,6 +59,23 @@ function Listing() {
             ></div>
           </SwiperSlide>
         ))}
+        <div
+          className="absolute bottom-[4%] right-[3%] shadow-sm bg-white p-1 z-10 rounded-full cursor-pointer hover:shadow-xl transition-shadow duration-150 ease-in-out"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            setShareLinkCopied(true);
+            setTimeout(() => {
+              setShareLinkCopied(false);
+            }, 1500);
+          }}
+        >
+          <BiLinkAlt className="text-lg text-gray-600" />
+        </div>
+        {shareLinkCopied && (
+          <p className="absolute bottom-[12%] bg-white right-[3%] px-2 z-10 rounded-md text-gray-800 text-sm">
+            Link Copied
+          </p>
+        )}
       </Swiper>
     </main>
   );
