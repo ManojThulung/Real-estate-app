@@ -31,7 +31,7 @@ function ListItems({ listing, id, onDelete, onEdit }) {
             {listing.offer
               ? Number(listing.discountPrice).toLocaleString("en-IN")
               : Number(listing.regularPrice).toLocaleString("en-IN")}
-            {listing.type === "rent" && " / Rent"}
+            {listing.type === "rent" && " / Month"}
           </p>
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-1">
