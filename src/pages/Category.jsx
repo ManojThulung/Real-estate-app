@@ -84,6 +84,7 @@ function Category() {
       </h1>
       {isLoading ? (
         <Spinner />
+        // this is comment
       ) : offerListings && offerListings.length > 0 ? (
         <>
           <main>
